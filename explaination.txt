@@ -1,0 +1,2 @@
+1) Build the app
+2) Build the state
