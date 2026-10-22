@@ -39,3 +39,26 @@ pub async fn get_one(
         .map(|t| Json(t.clone()))
         .ok_or(StatusCode::NOT_FOUND)
 }
+
+pub async fn update(
+    State(state): State<AppState>,
+    Path(id): Path<u32>,
+    Json(payload): Json<UpdateTask>,
+) -> Result<Json<Task>, StatusCode> {
+    let mut tasks = state.tasks.lock().unwrap();
+
+    let task = tasks
+        .iter_mut()
+        .find(|t| t.id == id)
+        .ok_or(StatusCode::NOT_FOUND)?;
+
+    if let Some(title) = payload.title {
+        task.title = title
+    }
+
+    if let Some(done) = payload.done {
+        task.done = done
+    }
+
+    Ok(Json(task.clone()))
+}
