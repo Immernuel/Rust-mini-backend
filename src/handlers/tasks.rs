@@ -26,3 +26,16 @@ pub async fn create(
 
     (StatusCode::CREATED, Json(task))
 }
+
+pub async fn get_one(
+    State(state): State<AppState>,
+    Path(id): Path<u32>,
+) -> Result<Json<Task>, StatusCode> {
+    let tasks = state.tasks.lock().unwrap();
+
+    tasks
+        .iter()
+        .find(|t| t.id == id)
+        .map(|t| Json(t.clone()))
+        .ok_or(StatusCode::NOT_FOUND)
+}
