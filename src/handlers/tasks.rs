@@ -62,3 +62,17 @@ pub async fn update(
 
     Ok(Json(task.clone()))
 }
+
+pub async fn delete(State(state): State<AppState>, Path(id): Path<u32>) -> StatusCode {
+    let mut tasks = state.tasks.lock().unwrap();
+
+    let before = tasks.len();
+
+    tasks.retain(|t| t.id != id);
+
+    if tasks.len() < before {
+        StatusCode::NO_CONTENT
+    } else {
+        StatusCode::NOT_FOUND
+    }
+}
