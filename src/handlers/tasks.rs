@@ -76,3 +76,9 @@ pub async fn delete(State(state): State<AppState>, Path(id): Path<u32>) -> Statu
         StatusCode::NOT_FOUND
     }
 }
+
+pub async fn list(State(state): State<AppState>) -> Json<Vec<Task>> {
+    let tasks = state.tasks.lock().unwrap();
+
+    Json(tasks.clone())
+}
